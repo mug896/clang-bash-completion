@@ -38,7 +38,7 @@ _clang()
     done
 
     if [[ $PREO == @(-Wl|-Wa) ]]; then
-        [[ $PREO == -Wl ]] && CMD2="ld.lld" || CMD2="as"    # CMD2=ld.lld
+        [[ $PREO == -Wl ]] && CMD2="ld" || CMD2="as"    # ld.lld
         HELP=$( $CMD2 --help 2> /dev/null )
 
         if [[ $CUR == -* ]]; then
