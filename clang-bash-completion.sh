@@ -59,15 +59,14 @@ _clang()
     elif [[ $CUR == -* ]]; then
         if [[ $CUR == *[*?[]* ]]; then
             WORDS=$( $CMD --autocomplete="-" | sed -E 's/([ \t=]).*$/\1/' )
-            declare -A aar; IFS=$'\n'; args=; echo
+            declare -A aar; IFS=$'\n'; echo
             for v in $WORDS; do 
                 let aar[$v]++
                 if [[ $v == $CUR && ${aar[$v]} -eq 1 ]]; then
                     echo -e "\\e[36m$v\\e[0m"
                 fi
             done | less -FRSXi
-            args="-"
-            IFS=$'\n' COMPREPLY=($( compgen -W "$args" ))
+            IFS=$'\n' COMPREPLY=( "-" )
         else
             WORDS=$( $CMD --autocomplete="$CUR" | gawk '{print $1}' )
             WORDS+=$'\n--autocomplete='
