@@ -68,7 +68,6 @@ _clang()
             done | less -FRSXi
             args="-"
             IFS=$'\n' COMPREPLY=($( compgen -W "$args" ))
-
         else
             WORDS=$( $CMD --autocomplete="$CUR" | gawk '{print $1}' )
             WORDS+=$'\n--autocomplete='
