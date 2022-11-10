@@ -19,7 +19,7 @@ bash$ clang -save-temps -*strict*[tab]
 -fstrict-return
 -fstrict-vtable-pointers
 . . .                       # "q"
-[tab][tab]                  # [tab][tab] to exit to the prompt.
+[tab]                       # [tab] to exit to the prompt.
 
 ---------------------------------------------------------
 
