@@ -67,8 +67,8 @@ _clang()
                     echo -e "\\e[36m$v\\e[0m"
                 fi
             done | less -FRSXi
-            IFS=$'\n' COMPREPLY=( "-" )
-            bind -x '"\011":_clang_bind'
+            IFS=$'\n' COMPREPLY=( "${CUR_O%%[[*?]*}" )
+            bind -x '"\011": _clang_bind'
         else
             WORDS=$( $CMD --autocomplete="$CUR" | gawk '{print $1}' )
             WORDS+=$'\n--autocomplete='
