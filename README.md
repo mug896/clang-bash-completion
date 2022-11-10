@@ -20,17 +20,6 @@ bash$ clang -save-temps -*strict*[tab]
 -fstrict-vtable-pointers
 . . .                       # "q"
 [tab]                       # [tab] to exit to the prompt.
-
----------------------------------------------------------
-
-bash$ clang -save-temps -*strict*[tab]
-. . .
--fno-strict-aliasing
---strict-aliasing
-. . .                          # "q"
-[backspace]fno-stric[tab]      # one backspace key is needed.
-or
-[backspace]-strict-ali[tab]    # one "-" char in front is hidden.
 ```
 
 
