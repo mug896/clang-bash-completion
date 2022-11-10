@@ -9,6 +9,7 @@ _init_comp_wordbreaks()
         "$'PROMPT_COMMAND=${PROMPT_COMMAND#*$\'\\n\'}\n'$PROMPT_COMMAND
     fi
 }
+_clang_bind() { bind '"\011": complete' ;}
 _clang() 
 {
     # It is recommended that every completion function starts with _init_comp_wordbreaks,
@@ -67,6 +68,7 @@ _clang()
                 fi
             done | less -FRSXi
             IFS=$'\n' COMPREPLY=( "-" )
+            bind -x '"\011":_clang_bind'
         else
             WORDS=$( $CMD --autocomplete="$CUR" | gawk '{print $1}' )
             WORDS+=$'\n--autocomplete='
