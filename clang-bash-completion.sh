@@ -77,7 +77,7 @@ _clang()
     elif [[ $PREV == --target ]]; then
         WORDS=$( $CMD --print-targets | gawk 'NR == 1 {next} {print $1}' );
 
-    elif [[ $PREV == @(-march|-mcpu|-mtune) ]]; then
+    elif [[ $PREV == @(-mcpu|-mtune) ]]; then
         for (( i = 1; i < COMP_CWORD; i++ )); do
             if [[ ${COMP_WORDS[i]} == --target ]]; then
                 args="--target=${COMP_WORDS[i+2]}"
