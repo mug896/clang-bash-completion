@@ -57,7 +57,7 @@ _clang()
         fi
 
     elif [[ $CUR == -* ]]; then
-        if [[ $CUR == *[*?[]* ]]; then
+        if [[ $CUR == *[[*?]* ]]; then
             WORDS=$( $CMD --autocomplete="-" | sed -E 's/([ \t=]).*$/\1/' )
             declare -A aar; IFS=$'\n'; echo
             for v in $WORDS; do 
