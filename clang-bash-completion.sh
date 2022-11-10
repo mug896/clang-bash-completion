@@ -74,6 +74,18 @@ _clang()
             WORDS+=$'\n--autocomplete='
         fi
 
+    elif [[ $PREV == --target ]]; then
+        WORDS=$( $CMD --print-targets | gawk 'NR == 1 {next} {print $1}' );
+
+    elif [[ $PREV == @(-march|-mcpu|-mtune) ]]; then
+        for (( i = 1; i < COMP_CWORD; i++ )); do
+            if [[ ${COMP_WORDS[i]} == --target ]]; then
+                args="--target=${COMP_WORDS[i+2]}"
+                break
+            fi
+        done
+        WORDS=$( $CMD $args --print-supported-cpus |& sed -En '/^Available CPUs /,/^Use /{ //d; p }' )
+
     elif [[ $PREV == -[[:alnum:]-]* ]]; then
         [[ $CUR_O == "=" || $PREV_O == "=" ]] && args="$PREV=" || args="$PREV"
         WORDS=$( $CMD --autocomplete="$args" | gawk '{print $1}' )
