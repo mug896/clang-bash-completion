@@ -92,8 +92,7 @@ _clang()
 
     elif [[ $PREV == -[[:alnum:]-]* ]]; then
         [[ $CUR_O == "=" || $PREV_O == "=" ]] && args="$PREV=" || args="$PREV"
-        WORDS=$( $CMD --autocomplete="$args" | gawk '{print $1}' )
-        [[ $PREV == $WORDS ]] && WORDS=
+        WORDS=$( $CMD --autocomplete="$args" | gawk '!/^-/{print $1}' )
     fi
 
     if [[ -z $COMPREPLY ]]; then
