@@ -54,7 +54,11 @@ _clang()
             WORDS=$(<<< $HELP sed -En 's/^\s*-z ([[:alnum:]-]+=?).*/\1/p' )
         
         elif [[ ($PREV == -* && $PREV != $PREO) || $PREV2 == -z ]]; then
-            WORDS=$(<<< $HELP sed -En 's/.* '"$PREV"'[ =]\[([^]]+)].*/\1/; tX; b; :X s/[,|]/\n/g; p')
+            WORDS=$(<<< $HELP sed -En 's/.* '"$PREV"'[ =]\[([^]]+)].*/\1/; tX; b; :X s/[,|]/\n/g; p; Q')
+            if [[ -z $WORDS ]]; then
+                WORDS=$(<<< $HELP sed -En 's/.* '"$PREV"'=([[:alpha:]][[:alnum:]-]+=?).*/\1/p')
+                [[ $WORDS != *$'\n'* ]] && WORDS=""
+            fi
         fi
 
     elif [[ $CUR == -* ]]; then
