@@ -38,11 +38,11 @@ _clang()
         fi
     done
 
-    if [[ $PREO == @(-Wl|-Wa) ]]; then
-        [[ $PREO == -Wl ]] && CMD2="ld" || CMD2="as"    # ld.lld
+    if [[ $PREO == @(-Wl|-Wa) || $PREV == @(-Xlinker|-Xassembler) ]]; then
+        [[ $PREO == -Wl || $PREV == -Xlinker ]] && CMD2="ld" || CMD2="as"    # ld.lld
         HELP=$( $CMD2 --help 2> /dev/null )
 
-        if [[ $CUR == -* ]]; then
+        if [[ $CUR == -* || $PREV == @(-Xlinker|-Xassembler) ]]; then
             WORDS=$(<<< $HELP sed -En '
             s/^\s{,3}((-[^ ,=]+([ =][^ ,]+)?)(, *-[^ ,=]+([ =][^ ,]+)?)*)(.*)/\1/g; tX;
             b; :X s/((^|[^[:alnum:]])-[][[:alnum:]_+-]+=?)|./\1 /g; 
