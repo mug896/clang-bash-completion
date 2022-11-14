@@ -18,86 +18,86 @@ _clang()
     COMP_WORDBREAKS=${COMP_WORDBREAKS//:/}
     [[ $COMP_WORDBREAKS != *","* ]] && COMP_WORDBREAKS+=","
 
-    local IFS=$' \t\n' CUR CUR_O PREV PREV_O PREV2 PREO
-    local CMD=$1 CMD2 WORDS COMP_LINE2 HELP args arr i v
+    local IFS=$' \t\n' cur cur_o prev prev_o prev2 preo
+    local cmd=$1 cmd2 words comp_line2 help args arr i v
 
-    CUR=${COMP_WORDS[COMP_CWORD]} CUR_O=$CUR
-    [[ ${COMP_LINE:COMP_POINT-1:1} = " " || $COMP_WORDBREAKS == *$CUR* ]] && CUR=""
-    PREV=${COMP_WORDS[COMP_CWORD-1]} PREV_O=$PREV
-    [[ $PREV == [,=] ]] && PREV=${COMP_WORDS[COMP_CWORD-2]}
+    cur=${COMP_WORDS[COMP_CWORD]} cur_o=$cur
+    [[ ${COMP_LINE:COMP_POINT-1:1} = " " || $COMP_WORDBREAKS == *$cur* ]] && cur=""
+    prev=${COMP_WORDS[COMP_CWORD-1]} prev_o=$prev
+    [[ $prev == [,=] ]] && prev=${COMP_WORDS[COMP_CWORD-2]}
     if (( COMP_CWORD > 4 )); then
-        [[ $CUR_O == [,=] ]] && PREV2=${COMP_WORDS[COMP_CWORD-3]} || PREV2=${COMP_WORDS[COMP_CWORD-4]}
+        [[ $cur_o == [,=] ]] && prev2=${COMP_WORDS[COMP_CWORD-3]} || prev2=${COMP_WORDS[COMP_CWORD-4]}
     fi
-    COMP_LINE2=${COMP_LINE:0:$COMP_POINT}
-    eval arr=( $COMP_LINE2 ) 2> /dev/null
+    comp_line2=${COMP_LINE:0:$COMP_POINT}
+    eval arr=( $comp_line2 ) 2> /dev/null
     for (( i = ${#arr[@]} - 1; i > 0; i-- )); do
         if [[ ${arr[i]} == -* ]]; then
-            PREO=${arr[i]%%[^[:alnum:]_-]*}
-            [[ ($PREO == ${COMP_LINE2##*[ ]}) && ($PREO == $CUR_O) ]] && PREO=""
+            preo=${arr[i]%%[^[:alnum:]_-]*}
+            [[ ($preo == ${comp_line2##*[ ]}) && ($preo == $cur_o) ]] && preo=""
             break
         fi
     done
 
-    if [[ $PREO == @(-Wl|-Wa) || $PREV == @(-Xlinker|-Xassembler) ]]; then
-        [[ $PREO == -Wl || $PREV == -Xlinker ]] && CMD2="ld" || CMD2="as"    # ld.lld
-        HELP=$( $CMD2 --help 2> /dev/null )
+    if [[ $preo == @(-Wl|-Wa) || $prev == @(-Xlinker|-Xassembler) ]]; then
+        [[ $preo == -Wl || $prev == -Xlinker ]] && cmd2="ld" || cmd2="as"    # ld.lld
+        help=$( $cmd2 --help 2> /dev/null )
 
-        if [[ $CUR == -* || $PREV == @(-Xlinker|-Xassembler) ]]; then
-            WORDS=$(<<< $HELP sed -En '
+        if [[ $cur == -* || $prev == @(-Xlinker|-Xassembler) ]]; then
+            words=$(<<< $help sed -En '
             s/^\s{,3}((-[^ ,=]+([ =][^ ,]+)?)(, *-[^ ,=]+([ =][^ ,]+)?)*)(.*)/\1/g; tX;
             b; :X s/((^|[^[:alnum:]])-[][[:alnum:]_+-]+=?)|./\1 /g; 
             s/[,/ ]+/\n/g; s/\[=$/=/Mg; s/\[[[:alnum:]-]+$//Mg;  
             :Y h; tR1; :R1 s/([^=]+)\[(\|?(\w+-?))+](.*)/\1\3\4/; p; tZ; b; 
             :Z g; s/\|?\w+-?]/]/; tR2 :R2 s/-\[]([[:alnum:]])/-\1/p; tE; /\[]/! bY :E' )
 
-        elif [[ $PREO == -Wl && $PREV == -z ]]; then
-            WORDS=$(<<< $HELP sed -En 's/^\s*-z ([[:alnum:]-]+=?).*/\1/p' )
+        elif [[ $preo == -Wl && $prev == -z ]]; then
+            words=$(<<< $help sed -En 's/^\s*-z ([[:alnum:]-]+=?).*/\1/p' )
         
-        elif [[ ($PREV == -* && $PREV != $PREO) || $PREV2 == -z ]]; then
-            WORDS=$(<<< $HELP sed -En 's/.* '"$PREV"'[ =]\[([^]]+)].*/\1/; tX; b; :X s/[,|]/\n/g; p; Q')
-            if [[ -z $WORDS ]]; then
-                WORDS=$(<<< $HELP sed -En 's/.* '"$PREV"'=([[:alpha:]][[:alnum:]-]+=?).*/\1/p')
-                [[ $WORDS != *$'\n'* ]] && WORDS=""
+        elif [[ ($prev == -* && $prev != $preo) || $prev2 == -z ]]; then
+            words=$(<<< $help sed -En 's/.* '"$prev"'[ =]\[([^]]+)].*/\1/; tX; b; :X s/[,|]/\n/g; p; Q')
+            if [[ -z $words ]]; then
+                words=$(<<< $help sed -En 's/.* '"$prev"'=([[:alpha:]][[:alnum:]-]+=?).*/\1/p')
+                [[ $words != *$'\n'* ]] && words=""
             fi
         fi
 
-    elif [[ $CUR == -* ]]; then
-        if [[ $CUR == *[[*?]* ]]; then
-            WORDS=$( $CMD --autocomplete="-" | sed -E 's/([ \t=]).*$/\1/' )
+    elif [[ $cur == -* ]]; then
+        if [[ $cur == *[[*?]* ]]; then
+            words=$( $cmd --autocomplete="-" | sed -E 's/([ \t=]).*$/\1/' )
             declare -A aar; IFS=$'\n'; echo
-            for v in $WORDS; do 
+            for v in $words; do 
                 let aar[$v]++
-                if [[ $v == $CUR && ${aar[$v]} -eq 1 ]]; then
+                if [[ $v == $cur && ${aar[$v]} -eq 1 ]]; then
                     echo -e "\\e[36m$v\\e[0m"
                 fi
             done | less -FRSXi
-            IFS=$'\n' COMPREPLY=( "${CUR_O%%[[*?]*}" )
+            IFS=$'\n' COMPREPLY=( "${cur_o%%[[*?]*}" )
             bind -x '"\011": _clang_bind'
         else
-            WORDS=$( $CMD --autocomplete="$CUR" | gawk '{print $1}' )
-            WORDS+=$'\n--autocomplete='
+            words=$( $cmd --autocomplete="$cur" | gawk '{print $1}' )
+            words+=$'\n--autocomplete='
         fi
 
-    elif [[ $PREV == --target ]]; then
-        WORDS=$( $CMD --print-targets | gawk 'NR == 1 {next} {print $1}' );
+    elif [[ $prev == --target ]]; then
+        words=$( $cmd --print-targets | gawk 'NR == 1 {next} {print $1}' );
 
-    elif [[ $PREV == @(-mcpu|-mtune) ]]; then
+    elif [[ $prev == @(-mcpu|-mtune) ]]; then
         for (( i = 1; i < COMP_CWORD; i++ )); do
             if [[ ${COMP_WORDS[i]} == --target ]]; then
                 args="--target=${COMP_WORDS[i+2]}"
                 break
             fi
         done
-        WORDS=$( $CMD $args --print-supported-cpus |& sed -En '/^Available CPUs /,/^Use /{ //d; p }' )
+        words=$( $cmd $args --print-supported-cpus |& sed -En '/^Available CPUs /,/^Use /{ //d; p }' )
 
-    elif [[ $PREV == -[[:alnum:]-]* ]]; then
-        [[ $CUR_O == "=" || $PREV_O == "=" ]] && args="$PREV=" || args="$PREV"
-        WORDS=$( $CMD --autocomplete="$args" 2>/dev/null | gawk '$1 ~ /^-/{exit}{print $1}' )
+    elif [[ $prev == -[[:alnum:]-]* ]]; then
+        [[ $cur_o == "=" || $prev_o == "=" ]] && args="$prev=" || args="$prev"
+        words=$( $cmd --autocomplete="$args" 2>/dev/null | gawk '$1 ~ /^-/{exit}{print $1}' )
     fi
 
     if [[ -z $COMPREPLY ]]; then
-        WORDS=$( <<< $WORDS sed -E 's/^[[:blank:]]+|[[:blank:]]+$//g' )
-        IFS=$'\n' COMPREPLY=($(compgen -W "$WORDS" -- "$CUR"))
+        words=$( <<< $words sed -E 's/^[[:blank:]]+|[[:blank:]]+$//g' )
+        IFS=$'\n' COMPREPLY=($(compgen -W "$words" -- "$cur"))
     fi
     [[ ${COMPREPLY: -1} == [=,] ]] && compopt -o nospace
 }
