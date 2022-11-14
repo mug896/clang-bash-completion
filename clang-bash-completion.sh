@@ -63,7 +63,11 @@ _clang()
 
     elif [[ $cur == -* ]]; then
         if [[ $cur == *[[*?]* ]]; then
-            words=$( $cmd --autocomplete="-" | sed -E 's/([ \t=]).*$/\1/' )
+            if [[ ${COMP_WORDS[1]} == -cc1 ]]; then
+                words=$( $cmd -cc1 --help | sed -En 's/^[ ]{,10}(-[[:alnum:]_+-]+=?).*/\1/p' )
+            else
+                words=$( $cmd --autocomplete="-" | sed -E 's/([ \t=]).*$/\1/' )
+            fi
             declare -A aar; IFS=$'\n'; echo
             for v in $words; do 
                 let aar[$v]++
@@ -73,6 +77,10 @@ _clang()
             done | less -FRSXi
             IFS=$'\n' COMPREPLY=( "${cur_o%%[[*?]*}" )
             bind -x '"\011": _clang_bind'
+
+        elif [[ ${COMP_WORDS[1]} == -cc1 ]]; then
+            words=$( $cmd -cc1 --help | sed -En 's/^[ ]{,10}(-[[:alnum:]_+-]+=?).*/\1/p' )
+
         else
             words=$( $cmd --autocomplete="$cur" | gawk '{print $1}' )
             words+=$'\n--autocomplete='
