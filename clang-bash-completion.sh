@@ -62,7 +62,7 @@ _clang()
         fi
 
     elif [[ $cur == -*[[*?]* ]]; then
-        if [[ ${COMP_WORDS[1]} == -cc1 ]]; then
+        if [[ ${COMP_WORDS[1]} == -cc1 || $prev == -Xclang ]]; then
             words=$( $cmd -cc1 --help | sed -En 's/^[ ]{,10}(-[[:alnum:]_+-]+=?).*/\1/p' )
         else
             words=$( $cmd --autocomplete="-" | sed -E 's/([ \t=]).*$/\1/' )
@@ -78,7 +78,7 @@ _clang()
         bind -x '"\011": _clang_bind'
 
     elif [[ $cur == -* ]]; then
-        if [[ ${COMP_WORDS[1]} == -cc1 ]]; then
+        if [[ ${COMP_WORDS[1]} == -cc1 || $prev == -Xclang ]]; then
             words=$( $cmd -cc1 --help | sed -En 's/^[ ]{,10}(-[[:alnum:]_+-]+=?).*/\1/p' )
         else
             words=$( $cmd --autocomplete="$cur" | gawk '{print $1}' )
