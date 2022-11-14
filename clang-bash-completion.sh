@@ -38,23 +38,7 @@ _clang()
         fi
     done
 
-    if [[ $cur == -*[[*?]* ]]; then
-        if [[ ${COMP_WORDS[1]} == -cc1 ]]; then
-            words=$( $cmd -cc1 --help | sed -En 's/^[ ]{,10}(-[[:alnum:]_+-]+=?).*/\1/p' )
-        else
-            words=$( $cmd --autocomplete="-" | sed -E 's/([ \t=]).*$/\1/' )
-        fi
-        declare -A aar; IFS=$'\n'; echo
-        for v in $words; do 
-            let aar[$v]++
-            if [[ $v == $cur && ${aar[$v]} -eq 1 ]]; then
-                echo -e "\\e[36m$v\\e[0m"
-            fi
-        done | less -FRSXi
-        IFS=$'\n' COMPREPLY=( "${cur_o%%[[*?]*}" )
-        bind -x '"\011": _clang_bind'
-
-    elif [[ $preo == @(-Wl|-Wa) || $prev == @(-Xlinker|-Xassembler) ]]; then
+    if [[ $preo == @(-Wl|-Wa) || $prev == @(-Xlinker|-Xassembler) ]]; then
         [[ $preo == -Wl || $prev == -Xlinker ]] && cmd2="ld" || cmd2="as"    # ld.lld
         help=$( $cmd2 --help 2> /dev/null )
 
@@ -76,6 +60,22 @@ _clang()
                 [[ $words != *$'\n'* ]] && words=""
             fi
         fi
+
+    elif [[ $cur == -*[[*?]* ]]; then
+        if [[ ${COMP_WORDS[1]} == -cc1 ]]; then
+            words=$( $cmd -cc1 --help | sed -En 's/^[ ]{,10}(-[[:alnum:]_+-]+=?).*/\1/p' )
+        else
+            words=$( $cmd --autocomplete="-" | sed -E 's/([ \t=]).*$/\1/' )
+        fi
+        declare -A aar; IFS=$'\n'; echo
+        for v in $words; do 
+            let aar[$v]++
+            if [[ $v == $cur && ${aar[$v]} -eq 1 ]]; then
+                echo -e "\\e[36m$v\\e[0m"
+            fi
+        done | less -FRSXi
+        IFS=$'\n' COMPREPLY=( "${cur_o%%[[*?]*}" )
+        bind -x '"\011": _clang_bind'
 
     elif [[ $cur == -* ]]; then
         if [[ ${COMP_WORDS[1]} == -cc1 ]]; then
