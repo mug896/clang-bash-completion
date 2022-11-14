@@ -106,7 +106,7 @@ _clang()
         words=$( <<< $words sed -E 's/^[[:blank:]]+|[[:blank:]]+$//g' )
         IFS=$'\n' COMPREPLY=($(compgen -W "$words" -- "$cur"))
     fi
-    [[ ${COMPREPLY: -1} == [=,] ]] && compopt -o nospace
+    [[ ${COMPREPLY: -1} == "=" ]] && compopt -o nospace
 }
 
 complete -o default -o bashdefault -F _clang clang clang++
