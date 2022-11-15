@@ -22,6 +22,8 @@ bash$ clang -save-temps -*strict*[tab]
 [tab]                       # [tab] to exit to the prompt.
 ```
 
+There is also llvm-bash-completion.      
+https://github.com/mug896/llvm-bash-completion
 
 ## Installation
 
