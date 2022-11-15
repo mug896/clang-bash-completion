@@ -10,6 +10,18 @@ _init_comp_wordbreaks()
     fi
 }
 _clang_bind() { bind '"\011": complete' ;}
+_clang_search()
+{
+    declare -A aar; IFS=$'\n'; echo
+    for v in $words; do
+        let aar[$v]++
+        if [[ $v == $cur && ${aar[$v]} -eq 1 ]]; then
+            echo -e "\\e[36m$v\\e[0m"
+        fi
+    done | less -FRSXi
+    IFS=$'\n' COMPREPLY=( "${cur_o%%[[*?]*}" )
+    bind -x '"\011": _clang_bind'
+}
 _clang() 
 {
     # It is recommended that all completion functions start with _init_comp_wordbreaks,
@@ -50,6 +62,8 @@ _clang()
             :Y h; tR1; :R1 s/([^=]+)\[(\|?(\w+-?))+](.*)/\1\3\4/; p; tZ; b; 
             :Z g; s/\|?\w+-?]/]/; tR2 :R2 s/-\[]([[:alnum:]])/-\1/p; tE; /\[]/! bY :E' )
 
+            [[ $cur == -*[[*?]* ]] && _clang_search
+
         elif [[ $preo == -Wl && $prev == -z ]]; then
             words=$(<<< $help sed -En 's/^\s*-z ([[:alnum:]-]+=?).*/\1/p' )
         
@@ -67,15 +81,7 @@ _clang()
         else
             words=$( $cmd --autocomplete="-" | sed -E 's/([ \t=]).*$/\1/' )
         fi
-        declare -A aar; IFS=$'\n'; echo
-        for v in $words; do 
-            let aar[$v]++
-            if [[ $v == $cur && ${aar[$v]} -eq 1 ]]; then
-                echo -e "\\e[36m$v\\e[0m"
-            fi
-        done | less -FRSXi
-        IFS=$'\n' COMPREPLY=( "${cur_o%%[[*?]*}" )
-        bind -x '"\011": _clang_bind'
+        _clang_search
 
     elif [[ $cur == -* ]]; then
         if [[ ${COMP_WORDS[1]} == -cc1 || $prev == -Xclang ]]; then
