@@ -12,13 +12,17 @@ _init_comp_wordbreaks()
 _clang_bind() { bind '"\011": complete' ;}
 _clang_search()
 {
-    declare -A aar; IFS=$'\n'; echo
+    local res count opt
+    local -A aar; IFS=$'\n'; echo
     for v in $words; do
         let aar[$v]++
         if [[ $v == $cur && ${aar[$v]} -eq 1 ]]; then
-            echo -e "\\e[36m$v\\e[0m"
+            res+="\\e[36m$v\\e[0m"$'\n'
+            let count++
         fi
-    done | less -FRSXiN --file-size
+    done 
+    (( count > LINES - 1 )) && opt="+Gg"
+    echo -e "${res%$'\n'}" | less -FRSXiN $opt
     COMPREPLY=( "${cur_o%%[[*?]*}" )
     bind -x '"\011": _clang_bind'
 }
