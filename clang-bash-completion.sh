@@ -18,7 +18,7 @@ _clang_search()
         if [[ $v == $cur && ${aar[$v]} -eq 1 ]]; then
             echo -e "\\e[36m$v\\e[0m"
         fi
-    done | less -FRSXi
+    done | less -FRSXi +Gg
     COMPREPLY=( "${cur_o%%[[*?]*}" )
     bind -x '"\011": _clang_bind'
 }
