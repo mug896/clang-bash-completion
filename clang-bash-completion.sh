@@ -21,8 +21,8 @@ _clang_search()
             let count++
         fi
     done 
-    (( count > LINES )) && opt="+Gg"
-    echo -e "${res%$'\n'}" | less -FRSXiN $opt
+    (( count >= LINES )) && opt="+Gg"
+    echo -ne "$res" | less -FRSXiN $opt
     COMPREPLY=( "${cur_o%%[[*?]*}" )
     bind -x '"\011": _clang_bind'
 }
