@@ -17,12 +17,12 @@ _clang_search()
     for v in $words; do
         let aar[$v]++
         if [[ $v == $cur && ${aar[$v]} -eq 1 ]]; then
-            res+="\\e[36m$v\\e[0m"$'\n'
+            res+=$'\e[36m'"$v"$'\e[0m\n'
             let count++
         fi
     done 
     (( count >= LINES )) && opt="+Gg"
-    echo -ne "$res" | less -FRSXiN $opt
+    less -FRSXiN $opt <<< ${res%$'\n'}
     COMPREPLY=( "$cur_o" )
     bind -x '"\011": _clang_bind'
 }
