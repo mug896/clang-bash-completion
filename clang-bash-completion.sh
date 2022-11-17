@@ -112,7 +112,7 @@ _clang()
         words=$( $cmd --autocomplete="$args" 2>/dev/null | gawk '$1 ~ /^-/{exit}{print $1}' )
     fi
 
-    if ! [[ -v COMPREPLY ]]; then
+    if ! declare -p COMPREPLY 2> /dev/null; then
         words=$( <<< $words sed -E 's/^[[:blank:]]+|[[:blank:]]+$//g' )
         IFS=$'\n' COMPREPLY=($(compgen -W "$words" -- "$cur"))
     fi
