@@ -5,8 +5,8 @@ command as the original function for generating completion words.
 so there is no difference in the results.
 just added a few features.
 
-For example, you can search for completion words using `*`, `?`, `[...]` glob characters
-while writing command line.
+For example, you can try to search for completion words using the glob characters 
+'*', '?', '[...]' while writing the command line like this
 
 ```sh
 bash$ clang -save-temps -*strict*[tab]
