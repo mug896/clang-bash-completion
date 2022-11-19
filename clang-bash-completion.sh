@@ -14,7 +14,7 @@ _clang_search()
 {
     local res count opt
     words=$( <<< $words sed -E 's/^[ \t]+|[ \t]+$//g' | sort -u )
-    IFS=$'\n'; echo
+    local IFS=$'\n'; echo
     for v in $words; do
         if [[ $v == $cur ]]; then
             res+=$'\e[36m'"$v"$'\e[0m\n'
