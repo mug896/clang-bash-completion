@@ -13,7 +13,7 @@ _clang_bind() { bind '"\011": complete' ;}
 _clang_search()
 {
     local res count opt
-    words=$( <<< $words sed -E 's/^[[:blank:]]+|[[:blank:]]+$//g' | sort -u )
+    words=$( <<< $words sed -E 's/^[ \t]+|[ \t]+$//g' | sort -u )
     IFS=$'\n'; echo
     for v in $words; do
         if [[ $v == $cur ]]; then
@@ -113,7 +113,7 @@ _clang()
     fi
 
     if ! declare -p COMPREPLY &> /dev/null; then
-        words=$( <<< $words sed -E 's/^[[:blank:]]+|[[:blank:]]+$//g' )
+        words=$( <<< $words sed -E 's/^[ \t]+|[ \t]+$//g' )
         IFS=$'\n' COMPREPLY=($(compgen -W "$words" -- "$cur"))
     fi
     [[ ${COMPREPLY: -1} == "=" ]] && compopt -o nospace
