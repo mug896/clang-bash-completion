@@ -59,11 +59,11 @@ _clang()
 
         if [[ $cur == -* || $prev == @(-Xlinker|-Xassembler) ]]; then
             words=$(<<< $help sed -En '
-            s/^\s{,10}((-[^ ,=]+([ =][^ ,]+)?)(, *-[^ ,=]+([ =][^ ,]+)?)*)(.*)/\1/g; tX;
-            b; :X s/((^|[^[:alnum:]])-[][[:alnum:]_+-]+=?)|./\1 /g; 
+            s/^\s{,10}((-[^ ,=]+([ =][^ ,]+)?)(, *-[^ ,=]+([ =][^ ,]+)?)*)(.*)/\1/g; T;
+            s/((^|[^[:alnum:]])-[][[:alnum:]_+-]+=?)|./\1 /g; 
             s/[,/ ]+/\n/g; s/\[=$/=/Mg; s/\[[[:alnum:]-]+$//Mg;  
-            :Y h; tR1; :R1 s/([^=]+)\[(\|?(\w+-?))+](.*)/\1\3\4/; p; tZ; b; 
-            :Z g; s/\|?\w+-?]/]/; tR2 :R2 s/-\[]([[:alnum:]])/-\1/p; tE; /\[]/! bY :E' )
+            :X h; tR1; :R1 s/([^=]+)\[(\|?(\w+-?))+](.*)/\1\3\4/; p; T; 
+            g; s/\|?\w+-?]/]/; tR2 :R2 s/-\[]([[:alnum:]])/-\1/p; t; /\[]/! bX' )
 
             [[ $cur == -*[[*?]* ]] && _clang_search
 
@@ -71,7 +71,7 @@ _clang()
             words=$(<<< $help sed -En 's/^\s*-z ([[:alnum:]-]+=?).*/\1/p' )
         
         elif [[ ($prev == -* && $prev != $preo) || $prev2 == -z ]]; then
-            words=$(<<< $help sed -En 's/.* '"$prev"'[ =]\[([^]]+)].*/\1/; tX; b; :X s/[,|]/\n/g; p; Q')
+            words=$(<<< $help sed -En 's/.* '"$prev"'[ =]\[([^]]+)].*/\1/; T; s/[,|]/\n/g; p; Q')
             if [[ -z $words ]]; then
                 words=$(<<< $help sed -En 's/.* '"$prev"'=([[:alpha:]][[:alnum:]-]+=?).*/\1/p')
                 [[ $words != *$'\n'* ]] && words=""
