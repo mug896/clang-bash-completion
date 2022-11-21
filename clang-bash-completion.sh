@@ -38,7 +38,7 @@ _clang()
     local comp_line2=${COMP_LINE:0:$COMP_POINT}
 
     cur=${COMP_WORDS[COMP_CWORD]} cur_o=$cur
-    [[ ${COMP_LINE2: -1} = " " || $COMP_WORDBREAKS == *$cur* ]] && cur=""
+    [[ ${comp_line2: -1} = " " || $COMP_WORDBREAKS == *$cur* ]] && cur=""
     prev=${COMP_WORDS[COMP_CWORD-1]} prev_o=$prev
     [[ $prev == [,=] ]] && prev=${COMP_WORDS[COMP_CWORD-2]}
     if (( COMP_CWORD > 4 )); then
