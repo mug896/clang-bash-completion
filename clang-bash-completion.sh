@@ -65,7 +65,7 @@ _clang()
             :X h; tR1; :R1 s/([^=]+)\[(\|?(\w+-?))+](.*)/\1\3\4/; p; T; 
             g; s/\|?\w+-?]/]/; tR2 :R2 s/-\[]([[:alnum:]])/-\1/p; t; /\[]/!bX' )
 
-            [[ $cur == -*[[*?]* ]] && _clang_search
+            [[ $cur == -*[[*?]* ]] && { _clang_search; return ;}
 
         elif [[ $preo == -Wl && $prev == -z ]]; then
             words=$(<<< $help sed -En 's/^\s*-z ([[:alnum:]-]+=?).*/\1/p' )
@@ -85,6 +85,7 @@ _clang()
             words=$( $cmd --autocomplete="-" | sed -E 's/([ \t=]).*$/\1/' )
         fi
         _clang_search
+        return
 
     elif [[ $cur == -* ]]; then
         if [[ ${COMP_WORDS[1]} == -cc1 || $prev == -Xclang ]]; then
