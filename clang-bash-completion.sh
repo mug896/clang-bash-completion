@@ -13,12 +13,14 @@ _clang_bind() { bind '"\011": complete' ;}
 _clang_search()
 {
     local res count opt
+    _clang_number=""
     words=$( <<< $words sed -E 's/^[ \t]+|[ \t]+$//g' | sort -u )
     local IFS=$'\n'; echo
     for v in $words; do
         if [[ $v == $cur ]]; then
             res+=$'\e[36m'"$v"$'\e[0m\n'
             let count++
+            _clang_number+="$count $v"$'\n'
         fi
     done 
     (( count >= LINES )) && opt="+Gg"
@@ -53,7 +55,11 @@ _clang()
         fi
     done
 
-    if [[ $preo == @(-Wl|-Wa) || $prev == @(-Xlinker|-Xassembler) ]]; then
+    if [[ $cur == +([0-9]) ]]; then
+        words=$( <<< $_clang_number awk '$1 == '"$cur"' { print $2; exit }' )
+        COMPREPLY=( "$words" )
+
+    elif [[ $preo == @(-Wl|-Wa) || $prev == @(-Xlinker|-Xassembler) ]]; then
         [[ $preo == -Wl || $prev == -Xlinker ]] && cmd2="ld" || cmd2="as"    # ld.lld
         help=$( $cmd2 --help 2> /dev/null )
 

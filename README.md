@@ -11,15 +11,20 @@ For example, you can try to search for completion words using the glob character
 ```sh
 bash$ clang -save-temps -*strict*[tab]
 . . .
--fstrict-aliasing
--fstrict-enums
--fstrict-flex-arrays=
--fstrict-float-cast-overflow
--fstrict-overflow
--fstrict-return
--fstrict-vtable-pointers
+29 -fstrict-aliasing
+30 -fstrict-enums
+31 -fstrict-flex-arrays=
+32 -fstrict-float-cast-overflow
+33 -fstrict-overflow
+34 -fstrict-return
 . . .                       # "q"
 [tab]                       # [tab] to exit to the prompt.
+
+# After searching, you can use the numbers in the list to input completion words.
+
+$ clang -save-temps 29[tab]
+
+$ clang -save-temps -fstrict-aliasing
 ```
 
 There is also llvm-bash-completion.      
