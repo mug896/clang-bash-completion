@@ -21,7 +21,6 @@ bash$ clang -save-temps -*strict*[tab]
 [tab]                       # [tab] to exit to the prompt.
 
 # After searching, you can use the numbers in the list to input completion words.
-
 $ clang -save-temps 29[tab]
 
 $ clang -save-temps -fstrict-aliasing
