@@ -36,7 +36,7 @@ _clang()
     [[ $COMP_WORDBREAKS != *","* ]] && COMP_WORDBREAKS+=","
 
     local IFS=$' \t\n' cur cur_o prev prev_o prev2 preo
-    local cmd=$1 cmd2 words help args arr i v
+    local cmd=$1 cmd2 words help cc1 args arr i v
     local comp_line2=${COMP_LINE:0:$COMP_POINT}
 
     cur=${COMP_WORDS[COMP_CWORD]} cur_o=$cur
@@ -53,6 +53,9 @@ _clang()
             [[ ($preo == ${comp_line2##*[ ]}) && ($preo == $cur_o) ]] && preo=""
             break
         fi
+    done
+    for (( i = 1; i < COMP_CWORD; i++ )); do
+        [[ ${COMP_WORDS[i]} == "-cc1" ]] && cc1=true
     done
 
     if [[ $cur == +([0-9]) ]]; then
@@ -85,7 +88,7 @@ _clang()
         fi
 
     elif [[ $cur == -*[[*?]* ]]; then
-        if [[ ${COMP_WORDS[1]} == -cc1 || $prev == -Xclang ]]; then
+        if [[ $cc1 == true || $prev == -Xclang ]]; then
             words=$( $cmd -cc1 --help | sed -En 's/^[ ]{,10}(-[[:alnum:]_+-]+=?).*/\1/p' )
         else
             words=$( $cmd --autocomplete="-" | sed -E 's/([ \t=]).*$/\1/' )
@@ -94,7 +97,7 @@ _clang()
         return
 
     elif [[ $cur == -* ]]; then
-        if [[ ${COMP_WORDS[1]} == -cc1 || $prev == -Xclang ]]; then
+        if [[ $cc1 == true || $prev == -Xclang ]]; then
             words=$( $cmd -cc1 --help | sed -En 's/^[ ]{,10}(-[[:alnum:]_+-]+=?).*/\1/p' )
         else
             words=$( $cmd --autocomplete="$cur" | gawk '{print $1}' )
