@@ -55,7 +55,7 @@ _clang()
         fi
     done
     for (( i = 1; i < COMP_CWORD; i++ )); do
-        [[ ${COMP_WORDS[i]} == "-cc1" ]] && cc1=true
+        [[ ${COMP_WORDS[i]} == "-cc1" ]] && { cc1=true; break ;}
     done
 
     if [[ $cur == +([0-9]) ]]; then
