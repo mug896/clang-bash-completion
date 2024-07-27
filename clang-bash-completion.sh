@@ -11,7 +11,7 @@ _init_comp_wordbreaks()
 }
 _clang_search()
 {
-    local res
+    local res IFS=$'\n'
     words=$( <<< $words sed -E 's/^[ \t]+|[ \t]+$//g' | sort -u )
     for v in $words; do
         if [[ $v == $cur ]]; then
