@@ -5,25 +5,21 @@ command as the original function for generating completion words.
 so there is no difference in the results.
 just added a few features.
 
+
+```sh
+# This script requires the external command 'fsf' to use.
+# Therefore, first install the 'fsf' command as follows.
+
+bash$ sudo apt install fsf
+```
+
 For example, you can try to search for completion words using the glob characters 
 `*`, `?`, `[...]` while writing the command line like this:
 
 ```sh
-bash$ clang -save-temps -*strict*[tab]
-. . .
-29 -fstrict-aliasing
-30 -fstrict-enums
-31 -fstrict-flex-arrays=
-32 -fstrict-float-cast-overflow
-33 -fstrict-overflow
-34 -fstrict-return
-. . .                       # "q"
-[tab]                       # [tab] to exit to the prompt.
+bash$ clang -save-temps -*alias*[tab]
 
-# After searching, you can use the numbers in the list to input completion words.
-$ clang -save-temps 29[tab]
-
-$ clang -save-temps -fstrict-aliasing
+bash$ clang -save-temps -*[tab]
 ```
 
 There is also llvm-bash-completion.      

@@ -9,23 +9,17 @@ _init_comp_wordbreaks()
         "$'PROMPT_COMMAND=${PROMPT_COMMAND#*$\'\\n\'}\n'$PROMPT_COMMAND
     fi
 }
-_clang_bind() { bind '"\011": complete' ;}
 _clang_search()
 {
-    local res count opt
-    _clang_number=""
+    local res
     words=$( <<< $words sed -E 's/^[ \t]+|[ \t]+$//g' | sort -u )
-    local IFS=$'\n'; echo
     for v in $words; do
         if [[ $v == $cur ]]; then
-            res+=$'\e[36m'"$v"$'\e[0m\n'
-            let count++
-            _clang_number+="$count $v"$'\n'
+            res+=$v$'\n'
         fi
     done 
-    (( count >= LINES )) && opt="+Gg"
-    less -FRSXiN $opt <<< ${res%$'\n'}
-    bind -x '"\011": _clang_bind'
+    words=$( <<< $res fzf -m )
+    COMPREPLY=( "${words//$'\n'/ }" )
 }
 _clang() 
 {
@@ -74,7 +68,7 @@ _clang()
             :X h; tR1; :R1 s/([^=]+)\[(\|?(\w+-?))+](.*)/\1\3\4/; p; T; 
             g; s/\|?\w+-?]/]/; tR2 :R2 s/-\[]([[:alnum:]])/-\1/p; t; /\[]/!bX' )
 
-            [[ $cur == -*[[*?]* ]] && { _clang_search; return ;}
+            [[ $cur == -*[[*?]* ]] && _clang_search
 
         elif [[ $preo == -Wl && $prev == -z ]]; then
             words=$(<<< $help sed -En 's/^\s*-z ([[:alnum:]-]+=?).*/\1/p' )
@@ -94,7 +88,6 @@ _clang()
             words=$( $cmd --autocomplete="-" | sed -E 's/([ \t=]).*$/\1/' )
         fi
         _clang_search
-        return
 
     elif [[ $cur == -* ]]; then
         if [[ $cc1 == true || $prev == -Xclang ]]; then
