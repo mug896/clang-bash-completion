@@ -18,7 +18,7 @@ _clang_search()
             res+=$v$'\n'
         fi
     done 
-    words=$( <<< $res fzf -m )
+    words=$( <<< $res fzf -m --cycle )
     COMPREPLY=( "${words//$'\n'/ }" )
 }
 _clang() 
