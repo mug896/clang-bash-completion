@@ -18,7 +18,7 @@ _clang_search()
             res+=$v$'\n'
         fi
     done 
-    words=$( <<< $res fzf -m --cycle --info=inline )
+    words=$( <<< $res fzf -m --info=inline )
     COMPREPLY=( "${words//$'\n'/ }" )
 }
 _clang() 
@@ -52,11 +52,7 @@ _clang()
         [[ ${COMP_WORDS[i]} == "-cc1" ]] && { cc1=true; break ;}
     done
 
-    if [[ $cur == +([0-9]) ]]; then
-        words=$( <<< $_clang_number awk '$1 == '"$cur"' { print $2; exit }' )
-        COMPREPLY=( "$words" )
-
-    elif [[ $preo == @(-Wl|-Wa) || $prev == @(-Xlinker|-Xassembler) ]]; then
+    if [[ $preo == @(-Wl|-Wa) || $prev == @(-Xlinker|-Xassembler) ]]; then
         [[ $preo == -Wl || $prev == -Xlinker ]] && cmd2="ld" || cmd2="as"    # ld.lld
         help=$( $cmd2 --help 2> /dev/null )
 
